@@ -51,7 +51,7 @@
         <DropDown bind:isDropAreaActive />
     {/if}
 
-    {#if isDropAreaActive}
+    {#if showShareForm}
         <ShareForm />
     {/if}
 

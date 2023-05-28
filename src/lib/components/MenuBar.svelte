@@ -22,9 +22,10 @@
                 $modelState.model = 0;
                 $modelState.visualMode = 'textures';
                 $modelState.vertices = 0;
-                $modelState.triangles = 0;
+                $modelState.indices = 0;
                 $modelState.meshes = 0;
                 $modelState.textures = 0;
+                $modelState.texturesN = 0;
             } break;
 
             // Add

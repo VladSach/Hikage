@@ -16,12 +16,11 @@
 	},
 	"type": "module",
 	"dependencies": {
-		"@prisma/client": "^4.14.1",
+		"@sveltejs/adapter-cloudflare": "^2.3.0",
 		"@threlte/core": "^5.0.9",
 		"@threlte/extras": "^4.9.3",
 		"ace-builds": "^1.22.0",
 		"brace": "^0.11.1",
-		"prisma": "^4.14.1",
 		"three": "^0.152.2",
 		"tweakpane": "^3.1.9"
 	}
