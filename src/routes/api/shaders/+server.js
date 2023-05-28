@@ -1,7 +1,7 @@
 export async function GET(event) {
     const response = await fetch('https://d1-db.vladsach.workers.dev/api/shared');
     const { shaders } = await response.json();
-    return new Response(response);
+    return new Response(shaders);
 }
 
 export async function POST(event) {
