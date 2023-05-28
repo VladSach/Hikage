@@ -1,3 +1,5 @@
+import * as Three from 'three'
+
 export const ModelUtils = {
     getModelInfo: function (model, state) {
         const counter = new Array();
@@ -5,8 +7,8 @@ export const ModelUtils = {
         model.traverse(node => {
             if (!node.isMesh) { return; }
 
-            state.vertices = node.geometry.attributes.position.count;
-            state.triangles += node.geometry.index ?
+            state.vertices += node.geometry.attributes.position.count;
+            state.indices += node.geometry.index ?
                                node.geometry.index.count / 3 : 0;
             ++state.meshes
 
@@ -40,5 +42,18 @@ export const ModelUtils = {
         });
 
         return textures;
+    },
+
+    setModelScale: function (model) {
+        const desiredSize = 3;
+        const boundingBox = new Three.Box3().setFromObject(model);
+
+        const modelSize = new Three.Vector3();
+        boundingBox.getSize(modelSize);
+
+        const maxDimension = Math.max(modelSize.x, modelSize.y, modelSize.z);
+        const scaleFactor = desiredSize / maxDimension;
+
+        model.scale.set(scaleFactor, scaleFactor, scaleFactor);
     },
 };

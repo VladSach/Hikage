@@ -1,7 +1,7 @@
 <script>
     import { Loader } from '$lib/utils/Loader';
     import { LoaderUtils } from '$lib/utils/LoaderUtils';
-    import { globalState } from '$lib/../store'
+    import { globalState } from '$lib/store'
     import { onDestroy }  from 'svelte'
 
     export let isDropAreaActive;
@@ -32,7 +32,7 @@
     onDestroy(unsubGlobal);
 </script>
 
-<div class="drop-area active"
+<div
      style="
         --drop-area-height: {dropAreaHeight}px;
         --drop-area-border: {dropAreaBorderSize}px;
@@ -43,7 +43,7 @@
 </div>
 
 <style>
-    .drop-area {
+    div {
         width: 100%;
         height: var(--drop-area-height);
         color: #ff0000;
@@ -53,11 +53,11 @@
         position: absolute;
     }
 
-    .drop-area.active {
+    div:first-child {
         border: var(--drop-area-border) dashed #666;
         background-color: #f9f9f9;
         opacity: 0.2;
         pointer-events: auto;
-        z-index:9999
+        z-index: 3
     }
 </style>

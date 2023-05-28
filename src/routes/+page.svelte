@@ -1,15 +1,15 @@
 <script>
     import MenuBar from '$lib/components/MenuBar.svelte';
-    import ContentArea from './ContentArea.svelte'
+    import ContentArea from '$lib/components/ContentArea.svelte'
 </script>
 
-<div class="main-area">
+<div>
     <MenuBar />
     <ContentArea />
 </div>
 
 <style>
-    .main-area {
+    div {
         width: 100%;
         height: 100%;
         position: absolute;

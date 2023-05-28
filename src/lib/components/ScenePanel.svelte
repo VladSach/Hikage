@@ -1,11 +1,15 @@
 <script>
     import { Pane } from 'tweakpane'
     import { browser } from '$app/environment'
-    import { onMount } from 'svelte';
-    import { globalState, modelState, shadersState } from '$lib/../store'
+    import { onMount, afterUpdate } from 'svelte';
+    import { globalState, modelState, shadersState } from '$lib/store'
 
-    let offsetX, offsetY;
+    let offsetX, offsetY, twHeight;
 	let moving = false;
+
+    let pane;
+    let globals = $globalState;
+    let modelValues = $modelState;
 	
 	function onMouseDown() { moving = true; }
 	function onMouseUp()   { moving = false; }
@@ -20,12 +24,11 @@
         }
 
         const panel = document.getElementById('scene-panel');
-		offsetX = clamp(offsetX, 0, window.innerWidth - panel.offsetWidth);
-		offsetY = clamp(offsetY, 0, window.innerHeight - panel.offsetHeight);
-	}
+        const bar = window.innerHeight - globals.contentAreaHeight + 30;
 
-    let modelValues = $modelState;
-    let globals = $globalState;
+		offsetX = clamp(offsetX, 0, window.innerWidth - panel.offsetWidth);
+		offsetY = clamp(offsetY, bar, window.innerHeight - panel.offsetHeight);
+	}
 
     function drawGui() {
         const panel = document.getElementById('scene-panel');
@@ -34,9 +37,11 @@
 
         if (!browser) { return; }
 
-        const pane = new Pane({
+        const content = document.getElementById('pane-content');
+
+        pane = new Pane({
             expanded: true,
-            container: document.getElementById('pane-content')
+            container: content
         });
 
         const modelControls = pane.addFolder({title: 'Model'});
@@ -60,7 +65,7 @@
         modelControls.addSeparator();
 
         modelControls.addMonitor(modelValues, 'vertices');
-        modelControls.addMonitor(modelValues, 'triangles');
+        modelControls.addMonitor(modelValues, 'indices');
         modelControls.addMonitor(modelValues, 'meshes');
         modelControls.addMonitor(modelValues, 'texturesN', {
             label: 'textures'
@@ -70,10 +75,16 @@
         sceneControls.addInput(globals, 'skybox', {
             options: {
                 none: 'none',
-                skybox1: 'skybox1',
-                skybox2: 'skybox2',
+                mountains: 'mountains.hdr',
+                ruines: 'ruines.jpg',
+                bridge: 'bridge.jpg',
             },
             label: 'Skybox',
+        }).on('change', (ev) => {
+            globalState.update(state => {
+                state.skybox = ev.value;
+                return state;
+            });
         });
 
         const shadersControls = pane.addFolder({title: 'Shaders'});
@@ -84,6 +95,15 @@
         const pixelBtn = shadersControls.addButton({
             title: 'Edit',
             label: 'Pixel Shader'
+        });
+
+        shadersControls.addButton({
+            title: 'Share',
+        }).on('click', () => {
+            globalState.update(state => {
+                state.showShareForm = true;
+                return state;
+            });
         });
 
         vertexBtn.on('click', () => {
@@ -101,22 +121,25 @@
                 return state;
             });
         });
+
+        twHeight = content.offsetHeight;
     }
 
     onMount(() => {
         drawGui();
     });
 
+    afterUpdate(() => {
+        pane.refresh();
+    });
+
 </script>
 
 <div
     id="scene-panel"
-    style="left: {offsetX}px; top: {offsetY}px;"
+    style="left: {offsetX}px; top: {offsetY}px; --twHeight: {twHeight}px"
 >
-    <div
-        id="pane-title"
-        on:mousedown={onMouseDown}
-    >
+    <div on:mousedown={onMouseDown}>
         Controls
     </div>
     <div id="pane-content"></div>
@@ -124,20 +147,37 @@
 <svelte:window on:mouseup={onMouseUp} on:mousemove={onMouseMove} />
 
 <style>
-    #scene-panel {
-        position: absolute;
-        right: 0px;
-        width: 15%;
-        z-index: 9999;
+    :root {
+        --tp-container-background-color:        rgba(69, 64, 79, 1.0);
+        --tp-container-background-color-active: rgba(69, 64, 79, 1.0);
+        --tp-container-background-color-focus:  rgba(69, 64, 79, 1.0);
+        --tp-container-background-color-hover:  rgba(69, 64, 79, 1.0);
     }
 
-    #pane-title {
+    #scene-panel {
+        position: absolute;
+        right: 0;
+        top: 65px;
+        width: 15%;
+        height: calc(var(--twHeight) + 35);
+        z-index: 2;
+    }
+
+    div > div:nth-child(1) {
         cursor: move;
-        z-index: 9999;
-        background-color: #2196F3;
-        color: #fff;
-        padding: 0.5vh;
         text-align: center;
         user-select: none;
+
+        position:absolute;
+        width: 100%;
+        top: -30px;
+        height: 35px;
+
+        line-height: 35px;
+        font-size: 1.1em;
+        font-family: Arial, sans-serif;
+
+        color: rgba(255, 255, 255, 0.6);
+        background-color: rgba(69, 64, 79, 1.0);
     }
 </style>

@@ -1,7 +1,7 @@
 <script>
     import * as Three from 'three';
     import { onMount, onDestroy } from 'svelte';
-    import { globalState, shadersState } from '$lib/../store'
+    import { globalState, shadersState } from '$lib/store'
 
     let shaderCode, ace, editor;
     let context; // WebGL
@@ -9,6 +9,7 @@
     let editorAreaHeight = 0;
     let markerID = 0;
     let errorMsg = '';
+    let vimMode = false;
 
     function handleCodeChange() {
         shaderCode = editor.getValue();
@@ -65,12 +66,22 @@
         });
     }
 
+    function changeMode() {
+        vimMode = !vimMode;
+
+        const handler = vimMode ? 'ace/keyboard/vim' : '';
+        editor.setKeyboardHandler(handler);
+    }
+
     onMount(async () => {
         context = new Three.WebGLRenderer().getContext();
+
+        if (ace) { return; }
 
         ace = await import ('ace-builds/src-noconflict/ace');
         await import ('ace-builds/src-noconflict/mode-glsl');
         await import ('ace-builds/src-noconflict/theme-monokai');
+        await import ('ace-builds/src-noconflict/keybinding-vim');
 
         editor = ace.edit('editor-textarea');
         editor.session.setMode('ace/mode/glsl');
@@ -81,8 +92,9 @@
             fontSize: '1.5em',
         });
         editor.container.style.background="transparent";
-        editor.renderer.setScrollMargin(10, 10);
+        editor.renderer.setScrollMargin(10, 60);
     });
+
 
     function validate(src, type) {
         let shader, status;
@@ -114,6 +126,13 @@
                 "position"
             ];
 
+            const knownErrors = [
+                "storage qualifier supported in GLSL ES 3.00 and above only",
+                "dimension mismatch",
+                "not enough data provided for construction",
+                "cannot convert from 'const highp float'"
+            ];
+
             let line, error;
             for (let i = 0; i < lines.length; i++) {
                 line = lines[i];
@@ -121,14 +140,21 @@
                     if (line.includes("undeclared identifier") &&
                         keywords.some(keyword => line.includes(keyword)))
                     {
-                        return [true, null, null];
+                        continue;
                     }
+
+                    if (knownErrors.some(error => line.includes(error))) {
+                        continue;
+                    }
+
+
                     error = line;
                 }
             }
 
             if (!error || error[0] === "") {
-                return [false, 0, 'Unknown error'];
+                // return [false, 0, 'Unknown error'];
+                return [true, null, null];
             }
 
             const details = error.split(':');
@@ -159,54 +185,68 @@
     });
 </script>
 
-<div id="shader-editor"
-     style="--button-position: {editorAreaHeight}px;"
->
+<div style="--button-position: {editorAreaHeight}px;">
     <div id="editor-textarea"></div>
 
     <button
-        id="shader-editor-btn"
+        id="close-btn"
         on:click={applyShader}
         aria-label="Close"
     >
-        <span class="cross-line"></span>
-        <span class="cross-line"></span>
+	    {#each Array(2) as _}
+            <span></span>
+        {/each}
     </button>
 
-    <div id="error-area">{errorMsg}</div>
+    <div>
+        {errorMsg}
+        <button
+            on:click={changeMode}
+            style="background-color: {vimMode ? 'green' : 'red'};"
+        >
+            Vim
+        </button>
+    </div>
 </div>
 
 <style>
-    #shader-editor {
+    :global(.errorMarker) {
+        position: absolute;
+        background: rgba(255, 50, 50, 0.2);
+        z-index: 3;
+    }
+
+    div {
         position: absolute;
         background-color: rgba(35.0, 35.0, 35.0, 0.5);
-        z-index: 9998;
+        z-index: 2;
         width: 100%;
         height: 100%;
     }
 
     #editor-textarea {
+        position: relative;
         width: 100%;
-        height: 100%;
+        height: 96%;
     }
 
-    #error-area {
+    div > div:last-child {
         position: fixed;
         bottom: 0;
-        z-index: 9999;
+        z-index: 3;
         background-color: rgba(35.0, 35.0, 35.0, 1);
         width: 100%;
-        padding: 0.4em;
+        height: 3%;
 
         color: red;
         font-family: Arial;
     }
 
-    #shader-editor-btn {
+    #close-btn {
         position: fixed;
         top: calc(var(--button-position) + 1.5vh);
         right: 1vw;
-        z-index:9999;
+        z-index: 3;
 
         display: flex;
         justify-content: center;
@@ -218,7 +258,7 @@
         height: 2vw;
     }
 
-    .cross-line {
+    button > span {
         display: block;
         position: absolute;
         width: 100%;
@@ -226,17 +266,27 @@
         background-color: black;
         transform-origin: center;
     }
-    .cross-line:nth-child(1) {
+
+    button > span:nth-child(1) {
         transform: rotate(45deg);
     }
 
-    .cross-line:nth-child(2) {
+    button > span:nth-child(2) {
         transform: rotate(-45deg);
     }
 
-    :global(.errorMarker) {
-        position: absolute;
-        background: rgba(255, 50, 50, 0.2);
-        z-index:9999;
+    div > div:last-child > button {
+        position: fixed;
+        right: 0;
+        bottom: 0;
+
+        height: 3%;
+        color: white;
+
+        background-repeat: no-repeat;
+        border: none;
+        cursor: pointer;
+        overflow: hidden;
+        outline: none;
     }
 </style>
