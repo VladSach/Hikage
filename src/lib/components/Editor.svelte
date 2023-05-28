@@ -1,7 +1,7 @@
 <script>
     import * as Three from 'three'
     import * as Threlte from '@threlte/core'
-	import * as Extras from '@threlte/extras'
+	// import * as Extras from '@threlte/extras'
     import { VertexNormalsHelper } from 'three/addons/helpers/VertexNormalsHelper';
     import { onMount, onDestroy } from 'svelte';
 
@@ -152,11 +152,11 @@
 <Threlte.Object3DInstance object={axisHelper} />
 
 {#if skybox != 'none'}
-    <Extras.Environment
-        path='/skybox/'
-        files='{skybox}'
-        isBackground=true
-    />
+    <!-- <Extras.Environment -->
+    <!--     path='/skybox/' -->
+    <!--     files='{skybox}' -->
+    <!--     isBackground=true -->
+    <!-- /> -->
 {/if}
 
 <Threlte.PerspectiveCamera
