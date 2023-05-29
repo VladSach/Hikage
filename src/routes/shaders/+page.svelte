@@ -27,7 +27,9 @@
                     </div>
                 </a>
             {/each}
+            <button onclick="location.href='/';">Go back</button>
         </div>
+
     </div>
 {:catch error}
     <p>{error.message}</p>
@@ -98,4 +100,21 @@
         color: rgba(255, 255, 255, 0.5);
     }
 
+    button {
+        left: 50%;
+        position:relative;
+        transform: translate(-50%, 0);
+
+        background-color: transparent;
+        background-repeat: no-repeat;
+        border: 2px solid white;
+        cursor: pointer;
+        overflow: hidden;
+        outline: none;
+
+        color: rgba(255, 255, 255, 0.8);
+        font-size: 1.8rem;
+        margin-top: 1rem;
+        padding: 0.6rem;
+    }
 </style>
