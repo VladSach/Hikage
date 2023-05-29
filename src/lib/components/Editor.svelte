@@ -138,7 +138,6 @@
 	        return state;
 	    });
 
-
         document.addEventListener('mousemove', onDocumentMouseMove, false);
         function onDocumentMouseMove(event) {
             event.preventDefault();

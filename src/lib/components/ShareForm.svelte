@@ -1,4 +1,5 @@
 <script>
+    import { slugify } from '$lib/utils/ServerUtils'
     import { globalState, shadersState } from '$lib/store'
 
     function closeForm() {
@@ -12,13 +13,25 @@
         const form = event.target;
         const data = new FormData(form);
 
+        if (!data.get('vertex') && !data.get('pixel')) {
+            alert("At least one shader should be chosen");
+            return;
+        }
+
         data.append('vertex', $shadersState.vertexShaderCode);
         data.append('pixel',  $shadersState.pixelShaderCode);
+
+        const slug = slugify(data.get('title'));
+        data.append('slug', slug);
 
         await fetch('/api/shaders', {
             method: 'POST',
             body: data
         });
+
+        closeForm();
+
+        window.location.href = '/shaders/' + slug;
     }
 </script>
 

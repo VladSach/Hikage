@@ -4,8 +4,8 @@ compatibility_date = "2023-05-28"
 
 [[d1_databases]]
 binding = "DB" # i.e. available in your Worker on env.DB
-database_name = "shared-shaders"
-database_id = "fd181355-5901-43d6-93aa-e892188fd48f"
+database_name = "HikageDB"
+database_id = "250a93dc-7782-44bd-887e-8ae3b2672d07"
 
 # # KV Namespace binding - For more information: https://developers.cloudflare.com/workers/runtime-apis/kv
 # [[kv_namespaces]]

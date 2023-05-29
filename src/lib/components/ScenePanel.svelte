@@ -106,6 +106,12 @@
             });
         });
 
+        shadersControls.addButton({
+            title: 'Explore',
+        }).on('click', () => {
+            window.location.href = '/shaders';
+        });
+
         vertexBtn.on('click', () => {
             shadersState.update(state => {
                 state.showShaderEditor = true;
