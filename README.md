@@ -1,38 +1,48 @@
-# create-svelte
+# Hikage - Shader Development Web Application
+**Welcome to Hikage, a web application designed for working with 3D model shaders.**
 
-Everything you need to build a Svelte project, powered by [`create-svelte`](https://github.com/sveltejs/kit/tree/master/packages/create-svelte).
+Hikage provides users with convenient tools for shader development, along with a system for sharing them and the ability to explore effects created by other users.
 
-## Creating a project
+## Getting Started
+Upon opening the web application, users will encounter an empty viewer and a set of menu items for interaction ([See Initial Page](#initial-page)).
 
-If you're seeing this, you've probably already done this step. Congrats!
+### Initial Page
+![Initial Page](static/screenshots/InitialPage.png)
 
-```bash
-# create a new project in the current directory
-npm create svelte@latest
+Users can upload their own models or choose from available ones ([Example of Loaded Model](#loaded-model)). Additionally, users can change the display mode of the model or background ([Changing Display Mode](#changing-display-mode)) and open the code editor for the corresponding shader. **Currently supported only Vertex and Pixel Shaders.**
 
-# create a new project in my-app
-npm create svelte@latest my-app
-```
+### Loaded Model
+![Loaded Model](static/screenshots/LoadedModel.png)
 
-## Developing
+### Changing Display Mode
+![Changing Display Mode](static/screenshots/ChangingDisplayMode.png)
 
-Once you've created a project and installed dependencies with `npm install` (or `pnpm install` or `yarn`), start a development server:
+If a user decides to open the code editor, they can see the model changing in real-time as they write the shader code ([Working in the Editor](#working-in-the-editor)). Incorrect code is highlighted, and error notifications are displayed. ([Indicating Errors](#indicating-errors)).
 
-```bash
-npm run dev
+### Working in the Editor
+![Working in the Editor](static/screenshots/WorkingInTheEditor.png)
 
-# or start the server and open the app in a new browser tab
-npm run dev -- --open
-```
+### Indicating Errors
+![Indicating Errors](static/screenshots/IndicatingErrors.png)
 
-## Building
+## Sharing Shaders
+At any point, users can share their shaders through a dedicated form ([Shader Sharing Form](#shader-sharing-form)). After saving, users are redirected to a page showcasing their saved effect with a unique URL ([Example URL](#example-url)).
 
-To create a production version of your app:
+### Shader Sharing Form
+![Shader Sharing Form](static/screenshots/ShaderSharingForm.png)
 
-```bash
-npm run build
-```
+### Example URL
+![Example URL](static/screenshots/ExampleURL.png)
 
-You can preview the production build with `npm run preview`.
+Users can also visit a page displaying all shared shaders and choose the ones that interest them. Returning to the editor page is possible by pressing the "Go back" button ([Shared Effects Page](#shared-effects-page)).
 
-> To deploy your app, you may need to install an [adapter](https://kit.svelte.dev/docs/adapters) for your target environment.
+### Shared Effects Page
+![Shared Effects Page](static/screenshots/ShaderEffectPage.png)
+
+When viewing a shared shader ([Viewing Shared Shader](#viewing-shared-shader)), users can examine the shader code, return to the page with all user shaders, or apply the effect to see how it looks on a selected model ([Applying Shared Effect](#applying-shared-effect)).
+
+### Viewing Shared Shader
+![Viewing Shared Shader](static/screenshots/ViewingSharedShader.png)
+
+### Applying Shared Effect
+![Applying Shared Effect](static/screenshots/ApplyingSharedEffect.png)
